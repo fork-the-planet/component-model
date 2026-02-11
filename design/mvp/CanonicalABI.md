@@ -3908,7 +3908,6 @@ For a canonical definition:
 ```
 validation specifies:
 * `$f` is given type `(func (param $si) (param $ptr i32) (result i32))`
-* 🚟 - `cancellable` is allowed (otherwise it must be absent)
 
 Calling `$f` invokes the following function which waits for progress to be made
 on a `Waitable` in the given waitable set (indicated by index `$si`) and then
@@ -3952,7 +3951,6 @@ For a canonical definition:
 ```
 validation specifies:
 * `$f` is given type `(func (param $si i32) (param $ptr i32) (result i32))`
-* 🚟 - `cancellable` is allowed (otherwise it must be absent)
 
 Calling `$f` invokes the following function, which either returns an event that
 was pending on one of the waitables in the given waitable set (the same way as
@@ -4212,8 +4210,11 @@ Then a readable or writable buffer is created which (in `Buffer`'s constructor)
 eagerly checks the alignment and bounds of (`i`, `n`). (In the future, the
 restriction on futures/streams containing `borrow`s could be relaxed by
 maintaining sufficient bookkeeping state to ensure that borrowed handles *or
-streams/futures of borrowed handles* could not outlive their originating call.)
+streams/futures of borrowed handles* could not outlive their originating call.
+Additionally, `stream<char>` will be allowed and defined to encode and decode
+according to the `string-encoding`.)
 ```python
+  assert(not isinstance(stream_t, CharType))
   assert(not contains_borrow(stream_t))
   cx = LiftLowerContext(opts, thread.task.inst, borrow_scope = None)
   buffer = BufferT(stream_t.t, cx, ptr, n)
@@ -4627,7 +4628,6 @@ For a canonical definition:
 ```
 validation specifies:
 * `$yield-to` is given type `(func (param $i i32) (result i32))`
-* 🚟 - `cancellable` is allowed (otherwise it must be absent)
 
 Calling `$yield-to` invokes the following function which loads a thread at
 index `$i` from the current component instance's `threads` table, traps if it's
